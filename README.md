@@ -1,0 +1,51 @@
+# medvade — Live Website Source
+
+This repository contains the corrected source code for the medvade website.
+
+The current GitHub Pages website is:
+
+<https://3abody-71.github.io/medvade/>
+
+The older Manus preview link is not automatically updated when this GitHub repository changes. Use the GitHub Pages link above to view the version built from the `main` branch.
+
+It includes the original country pathways, specialty explorer and detail pages, saved-profile interactions, USA and Germany deep-dive sections, hospital cards, styling, application configuration, and the white-page production fix.
+
+## Run locally
+
+Install Node.js 20 or newer, then run:
+
+```bash
+pnpm install
+pnpm run dev
+```
+
+For a production build, run:
+
+```bash
+pnpm run build
+```
+
+## Source map
+
+| Area | Location |
+|---|---|
+| Application entry point | `client/src/main.tsx` |
+| Routes and page shell | `client/src/App.tsx`, `client/src/components/SiteLayout.tsx` |
+| Country details and data | `client/src/pages/CountryDetail.tsx`, `client/src/data/countries.json` |
+| Specialty details and data | `client/src/pages/SpecialtyDetail.tsx`, `client/src/data/specialties.json` |
+| USA and Germany deep dives | `client/src/components/UsaPathway.tsx`, `client/src/components/GermanyPathway.tsx` |
+| Global visual styling | `client/src/index.css` |
+| Profile and saved-item state | `client/src/contexts/AppContext.tsx` |
+
+## Media and deployment note
+
+The app source uses permanent `/manus-storage/...` paths supplied by the Manus project storage proxy. The matching original visual files and GIFs are included in `media-source/` as a backup. For a non-Manus deployment, upload those assets to your own storage or place them in the host's public asset directory, then update the corresponding paths in the source files.
+
+Do not commit `node_modules`, `dist`, `.env` files, API keys, passwords, or private deployment metadata.
+
+## Community persistence
+The Community page now includes a simple feed, country/category search, profile cards, follows, comments, private-message UI, reports, and client-side spam protection. It works immediately with a local browser fallback. To enable shared persistence for signed-in users, apply [`supabase/community.sql`](supabase/community.sql) in the same Supabase project used by the site.
+
+## Supabase authentication
+
+The `/auth` page uses Supabase Auth for email/password sign-up, sign-in, and password recovery. Configure the repository variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the GitHub Pages workflow. In Supabase Authentication settings, set the site URL to `https://3abody-71.github.io/medvade/` and add `https://3abody-71.github.io/medvade/auth` to the redirect URLs.

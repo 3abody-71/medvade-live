@@ -1,0 +1,261 @@
+import { Link } from "react-router-dom";
+import {
+  BookOpen,
+  Calendar,
+  Banknote,
+  Compass,
+  Route,
+  Users,
+} from "lucide-react";
+import countries from "../data/countries.json";
+import { useApp } from "../contexts/AppContext";
+import { assetPath } from "../lib/assetPath";
+import { countryName, uiText } from "../lib/i18n";
+import CareerRoadmap from "../components/CareerRoadmap";
+import {
+  FEATURE_VISIBILITY,
+  isCountryVisible,
+} from "../config/featureVisibility";
+
+function StatRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Calendar;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+        <Icon size={13} />
+        {label}
+      </div>
+      <div className="mt-0.5 text-sm font-bold">{value}</div>
+    </div>
+  );
+}
+
+function CountryCard({
+  country,
+  index,
+  isArabic,
+}: {
+  country: (typeof countries)[number];
+  index: number;
+  isArabic: boolean;
+}) {
+  const displayName = countryName(country.id, country.name, isArabic);
+  return (
+    <article
+      className="fade-up group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
+      style={{ animationDelay: `${index * 45}ms` }}
+      data-testid={`card-pathway-${country.id}`}
+    >
+      <Link
+        to={`/countries/${country.id}`}
+        data-testid={`link-country-image-${country.id}`}
+      >
+        <img
+          src={assetPath(country.image)}
+          alt={`${displayName} medical pathway`}
+          className={`country-card-image-img ${country.id === "usa" ? "country-card-image-usa" : ""} ${country.id === "uk" ? "country-card-image-uk" : ""}`}
+          loading="lazy"
+        />
+      </Link>
+      <div className="flex items-start justify-between gap-3 p-4 pb-0">
+        <Link
+          to={`/countries/${country.id}`}
+          className="flex items-center gap-2.5"
+          data-testid={`link-country-${country.id}`}
+        >
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-secondary font-mono text-xs font-bold text-primary">
+            {country.flag}
+          </span>
+          <span>
+            <span className="block text-sm font-extrabold">{displayName}</span>
+            <span className="mt-0.5 block text-xs text-muted-foreground">
+              {country.region}
+            </span>
+          </span>
+        </Link>
+      </div>
+      <Link to={`/countries/${country.id}`} className="block flex-1 p-4 pt-3">
+        <p className="country-card-summary mt-4 text-xs leading-5 text-muted-foreground">
+          {country.summary}
+        </p>
+        <div className="mt-4 grid grid-cols-2 gap-2.5">
+          <StatRow
+            icon={Calendar}
+            label={uiText(isArabic, "Residency range", "مدة الإقامة")}
+            value={country.residencyRange}
+          />
+          <StatRow
+            icon={Banknote}
+            label={uiText(isArabic, "Resident salary", "راتب الطبيب المقيم")}
+            value={country.salaryRange}
+          />
+        </div>
+      </Link>
+      <div className="mt-auto border-t border-border px-4 pb-4 pt-3">
+        <div className="flex w-full flex-col gap-2">
+          <Link
+            to={`/countries/${country.id}`}
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-2.5 py-2 text-[11px] font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+            data-testid={`link-main-route-${country.id}`}
+          >
+            <Route size={13} />{" "}
+            {uiText(
+              isArabic,
+              `Start the ${displayName} journey`,
+              `ابدأ رحلة ${displayName}`
+            )}
+          </Link>
+          <Link
+            to={`/countries/${country.id}/pathway-info`}
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-2 text-[11px] font-bold text-foreground transition-colors hover:bg-secondary"
+            data-testid={`link-articles-${country.id}`}
+          >
+            <BookOpen size={13} />{" "}
+            {uiText(
+              isArabic,
+              `More about ${country.flag} pathway`,
+              `المزيد عن مسار ${displayName}`
+            )}
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default function Home() {
+  const { profile, isArabic } = useApp();
+  const firstName = profile.firstName.trim();
+  const orderedCountries = countries
+    .filter(country => isCountryVisible(country.id))
+    .sort((a, b) => Number(b.id === "usa") - Number(a.id === "usa"));
+
+  return (
+    <div className="space-y-10">
+      {/* Hero */}
+      <section className="home-hero fade-up overflow-hidden rounded-2xl p-6 shadow-lg sm:p-8 lg:p-10">
+        <div className="home-hero-background" aria-hidden="true">
+          <span className="home-hero-orb home-hero-orb-one" />
+          <span className="home-hero-orb home-hero-orb-two" />
+          <span className="home-hero-grid" />
+        </div>
+        <img
+          src={assetPath("/assets/media/hero-medical-students_cfadeffa.jpg")}
+          alt="Medical students working together in a hospital"
+          className="home-hero-photo"
+          aria-hidden="true"
+        />
+        <div className="home-hero-content relative mx-auto flex max-w-[1200px] flex-col items-start justify-between gap-6 lg:flex-row lg:items-center lg:gap-8">
+          <div className="home-hero-copy">
+            <p className="home-hero-welcome">
+              {isArabic
+                ? firstName
+                  ? `مرحباً د. ${firstName}`
+                  : "مرحباً بك"
+                : firstName
+                  ? `Welcome, Dr. ${firstName}`
+                  : "Welcome, Doctor"}
+            </p>
+            <h1 className="home-hero-heading">
+              {isArabic ? (
+                "خطوتك نحو التدريب الطبي خارج بلدك"
+              ) : (
+                <>
+                  <span>medvade is Your mentor for</span>
+                  <span className="home-hero-highlight">
+                    Medical Residency Abroad.
+                  </span>
+                </>
+              )}
+            </h1>
+            <p className="home-hero-description">
+              {isArabic
+                ? "دليلك الموثوق لبناء مسيرة طبية ناجحة تتجاوز الحدود."
+                : "Your trusted guide to building a successful medical career beyond borders."}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <CareerRoadmap />
+
+      {/* Quick links */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {FEATURE_VISIBILITY.specialties && (
+            <Link
+              to="/explore"
+              className="btn-quiet inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold"
+            >
+              {uiText(isArabic, "Explore specialties", "استكشف التخصصات")}
+            </Link>
+          )}
+          {FEATURE_VISIBILITY.questions && (
+            <Link
+              to="/questions"
+              className="btn-quiet inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold"
+            >
+              {uiText(isArabic, "Ask a question", "اطرح سؤالاً")}
+            </Link>
+          )}
+          <Link
+            to="/profile"
+            className="btn-quiet inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold"
+            data-testid="link-home-profile"
+          >
+            <Compass size={14} />{" "}
+            {uiText(isArabic, "Discover your pathway", "اكتشف مسارك")}
+          </Link>
+          <Link
+            to="/community"
+            className="btn-quiet inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold"
+            data-testid="link-home-community"
+          >
+            <Users size={14} /> {uiText(isArabic, "Community", "المجتمع")}
+          </Link>
+        </div>
+        <span className="text-xs font-bold text-muted-foreground">
+          {uiText(
+            isArabic,
+            "A calm place to map your options",
+            "مساحة هادئة لرسم خياراتك"
+          )}
+        </span>
+      </div>
+
+      <section>
+        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {orderedCountries.map((country, index) => {
+            return (
+              <CountryCard
+                key={country.id}
+                country={country}
+                index={index}
+                isArabic={isArabic}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      {/* A note on the numbers */}
+      <p className="text-sm leading-6 text-muted-foreground">
+        <span className="font-bold">
+          {uiText(isArabic, "A note on the numbers:", "ملاحظة حول الأرقام:")}
+        </span>{" "}
+        {uiText(
+          isArabic,
+          "Salary and requirements vary by institution, year, visa, and licensing situation. Verify current details with the official licensing body and individual training program before making decisions.",
+          "تختلف الرواتب والمتطلبات حسب المؤسسة والسنة والتأشيرة ووضع الترخيص. تحقق من التفاصيل الحالية مع جهة الترخيص الرسمية وبرنامج التدريب المحدد قبل اتخاذ القرار."
+        )}
+      </p>
+    </div>
+  );
+}
