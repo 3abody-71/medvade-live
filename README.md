@@ -4,7 +4,7 @@ This repository contains the corrected source code for the medvade website.
 
 The current GitHub Pages website is:
 
-<https://3abody-71.github.io/medvade/>
+<https://3abody-71.github.io/medvade-live/>
 
 The older Manus preview link is not automatically updated when this GitHub repository changes. Use the GitHub Pages link above to view the version built from the `main` branch.
 
@@ -48,4 +48,4 @@ The Community page now includes a simple feed, country/category search, profile 
 
 ## Supabase authentication
 
-The `/auth` page uses Supabase Auth for email/password sign-up, sign-in, and password recovery. Configure the repository variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the GitHub Pages workflow. In Supabase Authentication settings, set the site URL to `https://3abody-71.github.io/medvade/` and add `https://3abody-71.github.io/medvade/auth` to the redirect URLs.
+The `/auth` page uses Supabase Auth for email/password sign-up, sign-in, and password recovery. Configure the repository variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the GitHub Pages workflow. In Supabase Authentication settings, set the site URL to `https://3abody-71.github.io/medvade-live/` and add `https://3abody-71.github.io/medvade-live/auth` to the redirect URLs.
